@@ -1421,7 +1421,11 @@ Function Use914%(item.Items, Setting%, x#, y#, z#)
 					;[End Block]
 				Case SETTING_ONE_TO_ONE
 					;[Block]
-					it2.Items = CreateItem("Playing Card", it_playcard, x, y, z)
+					If Level = it_key6
+						it2.Items = CreateItem("Key Card Omni", it_keyomni, x, y, z)
+					Else
+						it2.Items = CreateItem("Playing Card", it_playcard, x, y, z)
+					EndIf
 					;[End Block]
 				Case SETTING_FINE
 					;[Block]
@@ -2614,7 +2618,7 @@ Function GetUsingItem%(item.Items)
 	Select item\ItemTemplate\ID
 		Case it_key6
 			;[Block]
-			Return(KEY_CARD_6)
+			Return(KEY_CARD_OMNI)
 			;[End Block]
 		Case it_key0
 			;[Block]
