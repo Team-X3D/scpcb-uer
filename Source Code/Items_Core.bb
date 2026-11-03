@@ -1607,12 +1607,7 @@ Function Use914%(item.Items, Setting%, x#, y#, z#)
 					;[End Block]
 				Case SETTING_ONE_TO_ONE
 					;[Block]
-					If Rand(2) = 1
-						it2.Items = CreateItem("Mastercard", it_mastercard_golden, x, y, z)
-						it2\State = 1000
-					Else
-						it2.Items = CreateItem("Playing Card", it_playcard, x, y, z)
-					EndIf
+					it2.Items = CreateItem("Level 6 Key Card", it_key6, x, y, z)
 					;[End Block]
 				Case SETTING_FINE, SETTING_VERY_FINE
 					;[Block]
