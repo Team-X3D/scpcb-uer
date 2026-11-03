@@ -1546,6 +1546,8 @@ Function UpdateZoneColor%()
 	; ~ Handle room-specific settings
 	If PlayerRoom\RoomTemplate\RoomID = r_room3_storage And InFacility = LowerFloor
 		SetZoneColor(FogColorStorageTunnels)
+	ElseIf IsMTRoom(PlayerRoom)
+		SetZoneColor(FogColorStorageTunnels, AmbientColorRoom2MT)
 	ElseIf IsOutSide
 		SetZoneColor(FogColorOutside)
 		fog\FarDist = 60.0

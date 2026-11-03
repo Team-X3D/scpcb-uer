@@ -372,8 +372,8 @@ Function CreateNPC.NPCs(NPCType%, x#, y#, z#)
 				End Select
 				
 				n\Bones[i] = FindChild(n\OBJ, BoneName)
-				n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
-				EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
+				;n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
+				;EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
 			Next
 			
 			If NPCSound[SOUND_NPC_457_SIGHTING] = 0 Then NPCSound[SOUND_NPC_457_SIGHTING] = LoadSound_Strict("SFX\SCP\457\Sighting.ogg")
@@ -776,9 +776,9 @@ Function CreateNPCAsset%(n.NPCs, AssetID% = 0)
 						End Select
 						
 						n\Bones[i] = FindChild(n\OBJ, BoneName)
-						n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
-						If i = 10 Then n\NPCEmitter[i]\State = 4
-						EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
+						;n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
+						;If i = 10 Then n\NPCEmitter[i]\State = 4
+						;EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
 					Next
 					;[End Block]
 				Case 2
@@ -799,9 +799,9 @@ Function CreateNPCAsset%(n.NPCs, AssetID% = 0)
 								;[End Block]
 						End Select
 						n\Bones[i] = FindChild(n\OBJ, BoneName)
-						n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
-						If i = 1 Then n\NPCEmitter[i]\State = 4
-						EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
+						;n\NPCEmitter.Emitter[i] = SetEmitter(Null, EntityX(n\Bones[i], True), EntityY(n\Bones[i], True), EntityZ(n\Bones[i], True), 33)
+						;If i = 1 Then n\NPCEmitter[i]\State = 4
+						;EntityParent(n\NPCEmitter[i]\Owner, n\Bones[i])
 					Next
 					;[End Block]
 				Case 3

@@ -2242,6 +2242,11 @@ Function LoadEvents%()
 	
 	CreateEvent(e_room2_mt, r_room2_mt, 0)
 	
+	CreateEvent(e_mt_landing, r_mt_landing, 0, 1.0)
+	CreateEvent(e_mt_boiler, r_mt_boiler, 0, 1.0)
+	CreateEvent(e_mt_nest, r_mt_nest, 0, 1.0)
+	CreateEvent(e_mt_generator, r_mt_generator, 0, 1.0)
+	
 	CreateEvent(e_room2c_ec, r_room2c_ec, 0)
 	
 	CreateEvent(e_gate_a_entrance, r_gate_a_entrance, 0)

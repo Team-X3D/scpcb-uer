@@ -6,14 +6,37 @@ Function FillRoom%(r.Rooms)
 	CatchErrors("FillRoom()")
 	
 	Local d.Doors, d2.Doors, sc.SecurityCams, de.Decals, r2.Rooms, fr.Forest, emit.Emitter
-	Local it.Items, it2.Items, w.WayPoints, w2.WayPoints, l.Lights
+	Local it.Items, it2.Items, w.WayPoints, w2.WayPoints, l.Lights, n.NPCs
 	Local xTemp#, yTemp#, zTemp#, xTemp2%, yTemp2%, zTemp2%, SF%, b%, Name$
 	Local t1%, Tex%, Screen%, Scale#
 	Local i%, k%, Temp%, Temp3%, Angle#
 	Local ItemName$, ItemID%
 	Local SinValue#, CosValue#
+	Local FillRoomID% = r\RoomTemplate\RoomID
 	
-	Select r\RoomTemplate\RoomID
+	Select FillRoomID
+		Case r_mt_landing
+			FillRoomID = r_room2_5_ez
+			MT_LandingX = r\x : MT_LandingY = r\y : MT_LandingZ = r\z
+			MTZoneCreated = True
+		Case r_mt_corridor
+			FillRoomID = r_room2_5_ez
+		Case r_mt_junction
+			FillRoomID = r_room4_ez
+		Case r_mt_boiler
+			FillRoomID = r_room2_5_ez
+			MT_BoilerX = r\x : MT_BoilerY = r\y : MT_BoilerZ = r\z
+			MTZoneCreated = True
+		Case r_mt_generator
+			FillRoomID = r_room2_5_ez
+			r\RoomLevers[0] = CreateLever(r, r\x + 1.5, r\y + 1.0, r\z + 1.5, 180.0)
+		Case r_mt_nest
+			FillRoomID = r_room2_5_ez
+		Case r_mt_office
+			FillRoomID = r_room2_5_ez
+	End Select
+	
+	Select FillRoomID
 		Case r_room1_storage
 			;[Block]
 			; ~ Storage Room 6H door
@@ -2449,11 +2472,24 @@ Function FillRoom%(r.Rooms)
 			d.Doors = CreateDoor(r, r\x - 256.0 * RoomScale, r\y, r\z - 656.0 * RoomScale, 90.0, True, ELEVATOR_DOOR)
 			r\RoomDoors.Doors[1] = d
 			
-			d.Doors = CreateDoor(r, r\x + 256.0 * RoomScale, r\y - 12766.0 * RoomScale, r\z + 656.0 * RoomScale, 90.0, False, ELEVATOR_DOOR)
-			r\RoomDoors.Doors[2] = d
-			
-			d.Doors = CreateDoor(r, r\x - 504.0 * RoomScale, r\y - 12766.0 * RoomScale, r\z - 1072.0 * RoomScale, 90.0, False, ELEVATOR_DOOR)
-			r\RoomDoors.Doors[3] = d
+			If MTZoneCreated
+				Local mtLanding.Rooms = GetRoomByID(r_mt_landing)
+				Local mtBoiler.Rooms = GetRoomByID(r_mt_boiler)
+				
+				d.Doors = CreateDoor(mtLanding, MT_LandingX, MT_LandingY, MT_LandingZ + 4.0, 0.0, False, ELEVATOR_DOOR)
+				r\RoomDoors.Doors[2] = d
+				If mtLanding <> Null Then mtLanding\AdjDoor[3] = d
+				
+				d.Doors = CreateDoor(mtBoiler, MT_BoilerX - 4.0, MT_BoilerY, MT_BoilerZ, 90.0, False, ELEVATOR_DOOR)
+				r\RoomDoors.Doors[3] = d
+				If mtBoiler <> Null Then mtBoiler\AdjDoor[2] = d
+			Else
+				d.Doors = CreateDoor(r, r\x + 256.0 * RoomScale, r\y - 12766.0 * RoomScale, r\z + 656.0 * RoomScale, 90.0, False, ELEVATOR_DOOR)
+				r\RoomDoors.Doors[2] = d
+				
+				d.Doors = CreateDoor(r, r\x - 504.0 * RoomScale, r\y - 12766.0 * RoomScale, r\z - 1072.0 * RoomScale, 90.0, False, ELEVATOR_DOOR)
+				r\RoomDoors.Doors[3] = d
+			EndIf
 			
 			; ~ Code doors
 			d.Doors = CreateDoor(r, r\x, r\y, r\z, 0.0, False, HEAVY_DOOR, KEY_MISC, CODE_MAINTENANCE_TUNNELS)
@@ -2486,12 +2522,20 @@ Function FillRoom%(r.Rooms)
 			EntityParent(r\Objects[1], r\OBJ)
 			
 			r\Objects[2] = CreatePivot()
-			PositionEntity(r\Objects[2], r\x + 560.0 * RoomScale, r\y - 12766.0 * RoomScale + ElevatorPivotShift, r\z + 656.0 * RoomScale)
-			EntityParent(r\Objects[2], r\OBJ)
+			If MTZoneCreated
+				PositionEntity(r\Objects[2], MT_LandingX, MT_LandingY + ElevatorPivotShift, MT_LandingZ + 2.0)
+			Else
+				PositionEntity(r\Objects[2], r\x + 560.0 * RoomScale, r\y - 12766.0 * RoomScale + ElevatorPivotShift, r\z + 656.0 * RoomScale)
+				EntityParent(r\Objects[2], r\OBJ)
+			EndIf
 			
 			r\Objects[3] = CreatePivot()
-			PositionEntity(r\Objects[3], r\x - 808.0 * RoomScale, r\y - 12766.0 * RoomScale + ElevatorPivotShift, r\z - 1072.0 * RoomScale)
-			EntityParent(r\Objects[3], r\OBJ)
+			If MTZoneCreated
+				PositionEntity(r\Objects[3], MT_BoilerX - 2.0, MT_BoilerY + ElevatorPivotShift, MT_BoilerZ)
+			Else
+				PositionEntity(r\Objects[3], r\x - 808.0 * RoomScale, r\y - 12766.0 * RoomScale + ElevatorPivotShift, r\z - 1072.0 * RoomScale)
+				EntityParent(r\Objects[3], r\OBJ)
+			EndIf
 			
 			; ~ Fan
 			r\Objects[4] = LoadRMesh(RoomPartsPath + "ventilation_fan.rmesh", Null, False)
@@ -2557,31 +2601,14 @@ Function FillRoom%(r.Rooms)
 			de.Decals = CreateDecal(DECAL_CORROSIVE_2, r\x + 8904.0 * RoomScale, yTemp, r\z + 132.0 * RoomScale, 90.0, Rnd(360.0), 0.0, 3.0)
 			EntityParent(de\OBJ, r\OBJ)
 			
-			it.Items = CreateItem("Document SCP-457", it_paper, r\x + 649.0 * RoomScale, r\y - 12585.0 * RoomScale, r\z - 485.0 * RoomScale)
-			RotateEntity(it\Collider, 0.0, 0.0, 0.0)
-			EntityParent(it\Collider, r\OBJ)
-			
 			it.Items = CreateItem("Scorched Note", it_paper, r\x + 64.0 * RoomScale, r\y + 32.0 * RoomScale, r\z + 258.0 * RoomScale)
 			EntityParent(it\Collider, r\OBJ)
 			
-			it.Items = CreateItem("Level 4 Key Card", it_key4, r\x + 8408.0 * RoomScale, r\y - 12632.0 * RoomScale, r\z + 282.0 * RoomScale)
-			EntityParent(it\Collider, r\OBJ)
-			
-			it.Items = CreateItem("Logan Burton's Badge", it_badge, r\x + 8038.0 * RoomScale, r\y - 12662.0 * RoomScale, r\z + 316.0 * RoomScale)
-			EntityParent(it\Collider, r\OBJ)
-			
-			it.Items = CreateItem("SCP-500-01", it_scp500pill, r\x + 1827.0 * RoomScale, r\y - 12529.0 * RoomScale, r\z - 143.0 * RoomScale)
-			EntityParent(it\Collider, r\OBJ)
-			
-			it.Items = CreateItem("Fire Proximity Suit", it_finehazmatsuit, r\x + 7500.0 * RoomScale, r\y - 12612.0 * RoomScale, r\z + 356.0 * RoomScale)
-			RotateEntity(it\Collider, 0.0, 90.0, 0.0)
-			EntityParent(it\Collider, r\OBJ)
-			
-			it.Items = CreateItem("Night Vision Goggles", it_nvg, r\x + 2342.0 * RoomScale, r\y - 12773.0 * RoomScale, r\z + 4089.0 * RoomScale)
+			it.Items = CreateItem("Night Vision Goggles", it_nvg, r\x + 64.0 * RoomScale, r\y + 0.5, r\z - 64.0 * RoomScale)
 			it\State = Rnd(0.0, 1000.0)
 			EntityParent(it\Collider, r\OBJ)
 			
-			it.Items = CreateRandomBattery(r\x + 1823.0 * RoomScale, r\y - 12585.0 * RoomScale, r\z - 394.0 * RoomScale)
+			it.Items = CreateRandomBattery(r\x - 64.0 * RoomScale, r\y + 0.5, r\z + 64.0 * RoomScale)
 			EntityParent(it\Collider, r\OBJ)
 			
 			CreateCustomCenter(r, r\x, r\z - 656.0 * RoomScale)

@@ -585,6 +585,8 @@ Function LoadGame%(File$)
 	Local x#, y#, z#, i%, j%, Temp% = 0, Temp2% = 0, StrTemp$ = "", Tex%, ID%
 	Local f% = ReadFile_Strict(SavePath + File + "\save.cb")
 	
+	MTZoneCreated = False
+	
 	me\DropSpeed = 0.0
 	
 	GameSaved = True
@@ -2785,6 +2787,8 @@ Function LoadMap%(File$)
 	
 	Delete(CurrMapGrid)
 	CurrMapGrid = New MapGrid
+	
+	MTZoneCreated = False
 	
 	If Right(File, 6) = "cbmap2"
 		ReadLine(f)

@@ -2815,20 +2815,22 @@ Function UpdateNPCType372%(n.NPCs)
 End Function
 
 Function UpdateNPCType457%(n.NPCs)
-	If (PlayerRoom\RoomTemplate\RoomID <> r_room2_mt Lor InFacility <> LowerFloor) And PlayerRoom\RoomTemplate\RoomID <> r_dimension_1499
+	Local MTZone% = (PlayerRoom\RoomTemplate\RoomID = r_room2_mt Lor PlayerRoom\RoomTemplate\RoomID = r_mt_boiler)
+	
+	If (Not MTZone Lor InFacility <> LowerFloor) And PlayerRoom\RoomTemplate\RoomID <> r_dimension_1499
 		If n\Idle = 0.0
 			n\DropSpeed = 0.0
 			If ChannelPlaying(n\SoundCHN) Then StopChannel(n\SoundCHN) : n\SoundCHN = 0
 			If ChannelPlaying(n\SoundCHN2) Then StopChannel(n\SoundCHN2) : n\SoundCHN2 = 0
 			Local r.Rooms
 			For r.Rooms = Each Rooms
-				If r\RoomTemplate\RoomID = r_room2_mt
-					TFormPoint(7993.0, -12700.0, 1637.0, r\OBJ, 0)
-					Exit
-				EndIf
+				If r\RoomTemplate\RoomID = r_mt_boiler Then Exit
 			Next
-			PositionEntity(n\Collider, TFormedX(), TFormedY(), TFormedZ())
-			ResetEntity(n\Collider)
+			If r <> Null
+				TFormPoint(0.0, 0.0, 0.0, r\OBJ, 0)
+				PositionEntity(n\Collider, TFormedX(), TFormedY(), TFormedZ())
+				ResetEntity(n\Collider)
+			EndIf
 			n\Idle = 1.0
 		EndIf
 	Else

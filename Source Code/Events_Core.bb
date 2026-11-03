@@ -91,6 +91,7 @@ Enum EventList
 	e_tesla, e_broken_tesla
 	e_trick, e_trick_item
 	e_dimension_106, e_dimension_1499
+	e_mt_landing, e_mt_boiler, e_mt_nest, e_mt_generator
 End Enum
 
 ; ~ For Map Creator
@@ -416,6 +417,14 @@ Function FindEventID%(EventName$)
 			;[Block]
 			Return(e_dimension_1499)
 			;[End Block]
+		Case "mt_landing"
+			Return(e_mt_landing)
+		Case "mt_boiler"
+			Return(e_mt_boiler)
+		Case "mt_nest"
+			Return(e_mt_nest)
+		Case "mt_generator"
+			Return(e_mt_generator)
 		Default
 			;[Block]
 			Return(-1)
@@ -793,6 +802,14 @@ Function UpdateEvents%()
 				;[Block]
 				UpdateEvent_Room2_MT(e)
 				;[End Block]
+			Case e_mt_landing
+				UpdateEvent_MT_Landing(e)
+			Case e_mt_boiler
+				UpdateEvent_MT_Boiler(e)
+			Case e_mt_nest
+				UpdateEvent_MT_Nest(e)
+			Case e_mt_generator
+				UpdateEvent_MT_Generator(e)
 			Case e_room2_nuke
 				;[Block]
 				UpdateEvent_Room2_Nuke(e)

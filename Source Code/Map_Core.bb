@@ -1519,6 +1519,9 @@ Function DestroyForest%(fr.Forest, RemoveGrid% = True)
 End Function
 
 Global RoomTempID%
+Global MT_LandingX#, MT_LandingY#, MT_LandingZ#
+Global MT_BoilerX#, MT_BoilerY#, MT_BoilerZ#
+Global MTZoneCreated%
 
 Type RoomTemplates
 	Field OBJ%, ID%
@@ -1621,6 +1624,8 @@ Enum RoomList
 	r_room4_ez, r_room4_2_ez, r_room4_3_ez
 	; ~ OTHERS
 	r_dimension_106, r_dimension_1499
+	r_mt_landing, r_mt_corridor, r_mt_junction
+	r_mt_boiler, r_mt_generator, r_mt_nest, r_mt_office
 End Enum
 
 Function FindRoomID%(RoomName$)
@@ -2109,6 +2114,20 @@ Function FindRoomID%(RoomName$)
 			;[Block]
 			Return(r_room4_3_ez)
 			;[End Block]
+		Case "mt_landing"
+			Return(r_mt_landing)
+		Case "mt_corridor"
+			Return(r_mt_corridor)
+		Case "mt_junction"
+			Return(r_mt_junction)
+		Case "mt_boiler"
+			Return(r_mt_boiler)
+		Case "mt_generator"
+			Return(r_mt_generator)
+		Case "mt_nest"
+			Return(r_mt_nest)
+		Case "mt_office"
+			Return(r_mt_office)
 		Case "dimension_106"
 			;[Block]
 			Return(r_dimension_106)
@@ -5026,7 +5045,7 @@ Function UpdateRooms%()
 		opttimer\RoomsTimer = 17.5
 	EndIf
 	
-	CurrMapGrid\Found[Floor(EntityX(PlayerRoom\OBJ) / RoomSpacing) + (Floor(EntityZ(PlayerRoom\OBJ) / RoomSpacing) * MapGridSize)] = MapGrid_Tile
+	If (Not IsMTRoom(PlayerRoom)) Then CurrMapGrid\Found[Floor(EntityX(PlayerRoom\OBJ) / RoomSpacing) + (Floor(EntityZ(PlayerRoom\OBJ) / RoomSpacing) * MapGridSize)] = MapGrid_Tile
 	PlayerRoom\Found = True
 	
 	Local IsInside% = IsInsideBox(me\Collider, PlayerRoom\BoundingBox)
@@ -5268,6 +5287,133 @@ End Type
 
 Global I_Zone.MapZones
 
+Function GetRoomByID.Rooms(RoomID%)
+	Local r.Rooms
+	For r.Rooms = Each Rooms
+		If r\RoomTemplate\RoomID = RoomID Then Return(r)
+	Next
+	Return(Null)
+End Function
+
+Function IsMTRoom%(r.Rooms)
+	If r = Null Then Return(False)
+	Select r\RoomTemplate\RoomID
+		Case r_mt_landing, r_mt_corridor, r_mt_junction, r_mt_boiler, r_mt_generator, r_mt_nest, r_mt_office
+			Return(True)
+	End Select
+	Return(False)
+End Function
+
+Function CreateMTZone%()
+	Local d.Doors
+	Local baseX# = (MapGridSize + 12) * RoomSpacing
+	Local baseY# = -512.0
+	Local baseZ# = 0.0
+	Local landing.Rooms, corridor.Rooms, junction.Rooms
+	Local boiler.Rooms, generator.Rooms, nest.Rooms, office.Rooms
+
+	landing = CreateRoom(1, ROOM2, baseX, baseY, baseZ, r_mt_landing)
+	MT_LandingX = landing\x : MT_LandingY = landing\y : MT_LandingZ = landing\z
+	CalculateRoomExtents(landing)
+
+	corridor = CreateRoom(1, ROOM2, baseX, baseY, baseZ - RoomSpacing, r_mt_corridor)
+	CalculateRoomExtents(corridor)
+
+	junction = CreateRoom(1, ROOM4, baseX, baseY, baseZ - (RoomSpacing * 2.0), r_mt_junction)
+	CalculateRoomExtents(junction)
+
+	boiler = CreateRoom(1, ROOM2, baseX - RoomSpacing, baseY, baseZ - (RoomSpacing * 2.0), r_mt_boiler, 90.0)
+	MT_BoilerX = boiler\x : MT_BoilerY = boiler\y : MT_BoilerZ = boiler\z
+	CalculateRoomExtents(boiler)
+
+	generator = CreateRoom(1, ROOM2, baseX + RoomSpacing, baseY, baseZ - (RoomSpacing * 2.0), r_mt_generator, 90.0)
+	CalculateRoomExtents(generator)
+
+	nest = CreateRoom(1, ROOM2, baseX, baseY, baseZ - (RoomSpacing * 3.0), r_mt_nest)
+	CalculateRoomExtents(nest)
+
+	office = CreateRoom(1, ROOM2, baseX, baseY, baseZ - (RoomSpacing * 4.0), r_mt_office)
+	CalculateRoomExtents(office)
+
+	d = CreateDoor(landing, baseX, baseY, baseZ - 4.0, 0.0, False, HEAVY_DOOR)
+	landing\AdjDoor[1] = d : corridor\AdjDoor[3] = d
+
+	d = CreateDoor(corridor, baseX, baseY, baseZ - 12.0, 0.0, False, HEAVY_DOOR)
+	corridor\AdjDoor[1] = d : junction\AdjDoor[3] = d
+
+	d = CreateDoor(junction, baseX, baseY, baseZ - 20.0, 0.0, False, HEAVY_DOOR)
+	junction\AdjDoor[1] = d : nest\AdjDoor[3] = d
+
+	d = CreateDoor(nest, baseX, baseY, baseZ - 28.0, 0.0, False, HEAVY_DOOR)
+	nest\AdjDoor[1] = d : office\AdjDoor[3] = d
+
+	d = CreateDoor(junction, baseX - 4.0, baseY, baseZ - 16.0, 90.0, False, HEAVY_DOOR)
+	junction\AdjDoor[2] = d : boiler\AdjDoor[0] = d
+
+	d = CreateDoor(junction, baseX + 4.0, baseY, baseZ - 16.0, 90.0, False, HEAVY_DOOR)
+	junction\AdjDoor[0] = d : generator\AdjDoor[2] = d
+
+	d = CreateDoor(generator, baseX + 12.0, baseY, baseZ - 16.0, 90.0, False, HEAVY_DOOR)
+	d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+	FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+	FreeEntity(d\Buttons[1]) : d\Buttons[1] = 0
+	generator\AdjDoor[0] = d
+
+	d = CreateDoor(office, baseX, baseY, baseZ - 36.0, 0.0, False, HEAVY_DOOR)
+	d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+	FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+	FreeEntity(d\Buttons[1]) : d\Buttons[1] = 0
+	office\AdjDoor[1] = d
+	
+	MTZoneCreated = True
+End Function
+
+Function PopulateMTZone%()
+	Local boiler.Rooms = GetRoomByID(r_mt_boiler)
+	Local nest.Rooms = GetRoomByID(r_mt_nest)
+	Local n.NPCs
+	Local i%
+	
+	If boiler <> Null
+		n_I\Curr457 = CreateNPC(NPCType457, boiler\x, boiler\y, boiler\z)
+		
+		n = CreateNPC(NPCTypeD, boiler\x - 2.0, boiler\y, boiler\z + 1.5)
+		n\State3 = -1.0 : n\IsDead = True
+		RotateEntity(n\Collider, 0.0, 90.0, 0.0, True)
+		ChangeNPCTextureID(n, NPC_CLASS_D_VICTIM_457_2_TEXTURE)
+		CreateNPCAsset(n, 1)
+		SetNPCFrame(n, 40.0)
+		boiler\NPC[0] = n
+		
+		n = CreateNPC(NPCTypeD, boiler\x + 2.0, boiler\y, boiler\z - 1.5)
+		n\State3 = -1.0 : n\IsDead = True
+		RotateEntity(n\Collider, 0.0, 180.0, 0.0, True)
+		ChangeNPCTextureID(n, NPC_CLASS_D_VICTIM_457_1_TEXTURE)
+		SetNPCFrame(n, 40.0)
+		boiler\NPC[1] = n
+		
+		n = CreateNPC(NPCTypeD, boiler\x + 1.5, boiler\y, boiler\z + 2.0)
+		n\State3 = -1.0 : n\IsDead = True
+		RotateEntity(n\Collider, 0.0, 180.0, 0.0, True)
+		ChangeNPCTextureID(n, NPC_CLASS_D_BURTON_TEXTURE)
+		SetNPCFrame(n, 677.0)
+		boiler\NPC[2] = n
+	EndIf
+	
+	If nest <> Null
+		For i = 0 To 1
+			CreateNPC(NPCType966, nest\x + ((i * 2.0) - 1.0), nest\y, nest\z + ((i * 2.0) - 1.0))
+		Next
+		
+		n = CreateNPC(NPCTypeD, nest\x, nest\y + 0.5, nest\z - 2.0)
+		n\State3 = -1.0 : n\IsDead = True
+		SetNPCFrame(n, 502.0)
+		ChangeNPCTextureID(n, NPC_CLASS_D_HARN_TEXTURE)
+		RotateEntity(n\Collider, 0.0, 0.0, 0.0)
+		nest\NPC[0] = n
+	EndIf
+End Function
+
 Function CreateMap%()
 	Local r.Rooms, r2.Rooms, d.Doors
 	Local x%, y%, Temp%, Temp2%
@@ -5280,10 +5426,17 @@ Function CreateMap%()
 	I_Zone\Transition[1] = Floor(MapGridSize * (1.0 / 3.0)) + 1
 	I_Zone\HasCustomForest = False
 	
-	SeedRnd(GenerateSeedNumber(RandomSeed))
+	Local MapSeed% = GenerateSeedNumber(RandomSeed)
+	
+	SeedRnd(MapSeed)
 	
 	Delete(CurrMapGrid)
 	CurrMapGrid = New MapGrid
+	
+	MTZoneCreated = False
+	CreateMTZone()
+	
+	SeedRnd(MapSeed)
 	
 	x = MapGridSize / 2
 	y = MapGridSize - 2
@@ -5972,6 +6125,8 @@ Function CreateMap%()
 			If r\Adjacent[0] <> Null And r\Adjacent[1] <> Null And r\Adjacent[2] <> Null And r\Adjacent[3] <> Null Then Exit
 		Next
 	Next
+	
+	PopulateMTZone()
 End Function
 
 Function LoadTerrain%(HeightMap%, yScale# = 0.7, Tex1%, Tex2%, Mask%)
