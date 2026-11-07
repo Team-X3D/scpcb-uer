@@ -1589,10 +1589,21 @@ Function ExecuteConsoleCommand%(ConsoleMessage$)
 					Next
 					CreateConsoleMsg(GetLocalString("console", "ue.b"))
 					;[End Block]
+				Case "c"
+					;[Block]
+					For e.Events = Each Events
+						If e\EventID = e_gate_c_entrance
+							e\EventState3 = 1.0
+							e\room\RoomDoors[1]\Open = True
+							Exit
+						EndIf
+					Next
+					CreateConsoleMsg(GetLocalString("console", "ue.c"))
+					;[End Block]
 				Default
 					;[Block]
 					For e.Events = Each Events
-						If e\EventID = e_gate_b_entrance Lor e\EventID = e_gate_a_entrance
+						If e\EventID = e_gate_b_entrance Lor e\EventID = e_gate_a_entrance Lor e\EventID = e_gate_c_entrance
 							e\EventState3 = 1.0
 							e\room\RoomDoors[1]\Open = True
 						EndIf

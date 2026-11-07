@@ -92,6 +92,8 @@ Enum EventList
 	e_trick, e_trick_item
 	e_dimension_106, e_dimension_1499
 	e_mt_landing, e_mt_boiler, e_mt_nest, e_mt_generator
+	; GATE C (placeholder)
+	e_gate_c_entrance, e_gate_c
 End Enum
 
 ; ~ For Map Creator
@@ -296,6 +298,14 @@ Function FindEventID%(EventName$)
 		Case "gate_b"
 			;[Block]
 			Return(e_gate_b)
+			;[End Block]
+		Case "gate_c_entrance"
+			;[Block]
+			Return(e_gate_c_entrance)
+			;[End Block]
+		Case "gate_c"
+			;[Block]
+			Return(e_gate_c)
 			;[End Block]
 		Case "room2_7_hcz_guard"
 			;[Block]
@@ -874,6 +884,10 @@ Function UpdateEvents%()
 				;[Block]
 				UpdateEvent_Gate_B_Entrance(e)
 				;[End Block]
+			Case e_gate_c_entrance
+				;[Block]
+				UpdateEvent_Gate_C_Entrance(e)
+				;[End Block]
 			Case e_room2_ez_035
 				;[Block]
 				UpdateEvent_Room2_EZ_035(e)
@@ -1021,6 +1035,8 @@ Function UpdateEndings%()
 			UpdateEvent_Gate_A(e)
 		ElseIf e\EventID = e_gate_b
 			UpdateEvent_Gate_B(e)
+		ElseIf e\EventID = e_gate_c ; Gate A is used as a placeholder for Gate C
+			UpdateEvent_Gate_A(e)
 		ElseIf e\EventID = e_dimension_1499
 			UpdateEvent2_Dimension_1499(e)
 		EndIf

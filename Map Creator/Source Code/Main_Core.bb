@@ -1422,7 +1422,7 @@ Function LoadRoomTemplates%(File$)
 			Local AddRoom% = True
 			
 			Select TemporaryString
-				Case "room ambience", "cont1_173_intro", "dimension_106", "dimension_1499", "gate_b", "gate_a"
+				Case "room ambience", "cont1_173_intro", "dimension_106", "dimension_1499", "gate_b", "gate_a", "gate_c"
 					;[Block]
 					AddRoom = False
 					;[End Block]

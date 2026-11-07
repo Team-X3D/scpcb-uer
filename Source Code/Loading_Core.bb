@@ -2253,6 +2253,8 @@ Function LoadEvents%()
 	CreateEvent(e_gate_a, r_gate_a, 0)
 	CreateEvent(e_gate_b_entrance, r_gate_b_entrance, 0)
 	CreateEvent(e_gate_b, r_gate_b, 0)
+	CreateEvent(e_gate_c_entrance, r_gate_c_entrance, 0)
+	CreateEvent(e_gate_c, r_gate_c, 0)
 	
 	CreateEvent(e_cont1_205, r_cont1_205, 0)
 	

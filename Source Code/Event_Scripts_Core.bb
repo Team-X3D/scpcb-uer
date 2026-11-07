@@ -4512,7 +4512,7 @@ Function UpdateEvent_Cont1_079%(e.Events)
 			Local e2.Events
 			
 			For e2.Events = Each Events
-				If e2\EventID = e_gate_b_entrance Lor e2\EventID = e_gate_a_entrance Then e2\EventState3 = 1.0
+				If e2\EventID = e_gate_b_entrance Lor e2\EventID = e_gate_a_entrance Lor e2\EventID = e_gate_c_entrance Then e2\EventState3 = 1.0
 				If e2\EventID = e_room2_office_2 Then e2\EventState = 1.0
 			Next
 			
@@ -6610,6 +6610,53 @@ Function UpdateEvent_Gate_A_Entrance%(e.Events)
 	EndIf
 End Function
 
+Function UpdateEvent_Gate_C_Entrance%(e.Events)
+	If PlayerRoom = e\room
+		Local r.Rooms
+		Local RoomExists% = False
+		
+		For r.Rooms = Each Rooms
+			If r\RoomTemplate\RoomID = r_room2c_ec
+				RoomExists = True
+				Exit
+			EndIf
+		Next
+		If (Not RoomExists) Then e\EventState3 = 1.0
+		
+		If RemoteDoorOn And e\EventState3 = 0.0
+			e\room\RoomDoors[1]\Locked = 2
+		Else
+			e\room\RoomDoors[1]\Locked = 0
+			
+			Local gatec.Rooms = Null
+			
+			For r.Rooms = Each Rooms
+				If r\RoomTemplate\RoomID = r_gate_c
+					gatec = r 
+					Exit
+				EndIf
+			Next
+			
+			Local x# = EntityX(me\Collider, True)
+			Local y# = EntityY(me\Collider, True)
+			Local z# = EntityZ(me\Collider, True)
+			
+			me\InsideElevator = (IsInsideElevator(x, y, z, e\room\Objects[0]) Lor IsInsideElevator(x, y, z, e\room\Objects[1]))
+			ToElevatorFloor = UpperFloor
+			e\EventState = UpdateElevators(e\EventState, e\room\RoomDoors[0], gatec\RoomDoors[1], e\room\Objects[0], e\room\Objects[1], e)
+			If (Not n_I\Curr106\Contained)
+				If e\EventState < -1.5 And e\EventState + fps\Factor[0] >= -1.5 Then PlaySound_Strict(snd_I\SCP106SFX[3], True)
+			EndIf
+			
+			If EntityDistanceSquared(me\Collider, e\room\Objects[1]) < 16.0
+				gatec\RoomDoors[1]\Locked = 1
+				PlayerRoom = gatec
+				RemoveEvent(e)
+			EndIf
+		EndIf
+	EndIf
+End Function
+
 Function UpdateEvent_Gate_A%(e.Events)
 	If PlayerRoom = e\room
 		Local n.NPCs
@@ -6631,7 +6678,7 @@ Function UpdateEvent_Gate_A%(e.Events)
 			Local e2.Events
 			
 			For e2.Events = Each Events
-				If e\EventID <> e_gate_a Then RemoveEvent(e2)
+				If e\EventID <> e_gate_a And e\EventID <> e_gate_c Then RemoveEvent(e2)
 			Next
 			
 			Local du.Dummy1499_1

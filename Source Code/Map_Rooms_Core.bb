@@ -3610,6 +3610,125 @@ Function FillRoom%(r.Rooms)
 			
 			CreateCustomCenter(r, r\x - 5424.0 * RoomScale, r\z - 1700.0 * RoomScale)
 			;[End Block]
+		Case r_gate_c_entrance
+			;[Block]
+			; Gate C uses Gate A as a placeholder
+			; Main elevator door
+			d.Doors = CreateDoor(r, r\x, r\y, r\z + 1921.0 * RoomScale, 0.0, True, ELEVATOR_DOOR)
+			r\RoomDoors.Doors[0] = d
+			
+			; Blast door
+			d.Doors = CreateDoor(r, r\x, r\y, r\z + 1100.5 * RoomScale, 0.0, False, BIG_DOOR, KEY_CARD_5)
+			d\MTFClose = False
+			PositionEntity(d\Buttons[0], r\x - 423.0 * RoomScale, EntityY(d\Buttons[1], True), r\z + 1313.0 * RoomScale, True)
+			RotateEntity(d\Buttons[0], 0.0, 90.0, 0.0, True)
+			PositionEntity(d\Buttons[1], r\x + 497.0 * RoomScale, EntityY(d\Buttons[1], True), r\z + 919.0 * RoomScale, True)
+			RotateEntity(d\Buttons[1], 0.0, -45.0, 0.0, True)
+			r\RoomDoors.Doors[1] = d
+			
+			; Misc doors
+			d.Doors = CreateDoor(r, r\x + 682.0 * RoomScale, r\y, r\z + 544.0 * RoomScale, 90.0, False, OFFICE_DOOR)
+			d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			
+			d.Doors = CreateDoor(r, r\x + 1612.0 * RoomScale, r\y, r\z + 388.0 * RoomScale, 270.0, False, ELEVATOR_DOOR)
+			d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[1]) : d\Buttons[1] = 0
+			FreeEntity(d\ElevatorPanel[0]) : d\ElevatorPanel[0] = 0
+			
+			d.Doors = CreateDoor(r, r\x + 1612.0 * RoomScale, r\y, r\z - 388.0 * RoomScale, 270.0, False, ELEVATOR_DOOR)
+			d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[1]) : d\Buttons[1] = 0
+			FreeEntity(d\ElevatorPanel[0]) : d\ElevatorPanel[0] = 0
+			
+			; Elevator pivot
+			r\Objects[0] = CreatePivot()
+			PositionEntity(r\Objects[0], r\x, r\y, r\z + 2225.0 * RoomScale)
+			EntityParent(r\Objects[0], r\OBJ)
+			
+			CreateCustomCenter(r, r\x, r\z - 820.0 * RoomScale)
+			;[End Block]
+		Case r_gate_c
+			;[Block]
+			; Gate C uses Gate A as a placeholder
+			; Misc doors
+			d.Doors = CreateDoor(r, r\x, r\y, r\z - 1024.0 * RoomScale, 0.0)
+			d\AutoClose = False : d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+			FreeEntity(d\OBJ2) : d\OBJ2 = 0
+			
+			d.Doors = CreateDoor(r, r\x - 630.0 * RoomScale, r\y, r\z - 480.0 * RoomScale, 0.0)
+			d\AutoClose = False : d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+			FreeEntity(d\OBJ2) : d\OBJ2 = 0
+			
+			d.Doors = CreateDoor(r, r\x - 1090.0 * RoomScale, r\y, r\z - 480.0 * RoomScale, 0.0)
+			d\AutoClose = False : d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+			FreeEntity(d\OBJ2) : d\OBJ2 = 0
+			
+			d.Doors = CreateDoor(r, r\x, r\y, r\z + 2336.0 * RoomScale, 0.0, True, BIG_DOOR)
+			d\Locked = 1 : d\MTFClose = False
+			For i = 0 To 1
+				FreeEntity(d\Buttons[i]) : d\Buttons[i] = 0
+			Next
+			
+			d.Doors = CreateDoor(r, r\x + 5712.0 * RoomScale, r\y - 1248.0 * RoomScale, r\z + 4968.0 * RoomScale, 90.0)
+			d\AutoClose = False : d\Locked = 1 : d\DisableWaypoint = True : d\MTFClose = False
+			FreeEntity(d\Buttons[0]) : d\Buttons[0] = 0
+			PositionEntity(d\Buttons[1], EntityX(d\Buttons[1], True), EntityY(d\Buttons[1], True), EntityZ(d\Buttons[1], True) + 0.08, True)
+			FreeEntity(d\OBJ2) : d\OBJ2 = 0
+			
+			d.Doors = CreateDoor(r, r\x + 1250.0 * RoomScale, r\y - 1244.0 * RoomScale, r\z + 5144.0 * RoomScale, 0.0, False, FENCE_DOOR)
+			d\Locked = 2 : d\DisableWaypoint = True : d\MTFClose = False
+			
+			d.Doors = CreateDoor(r, r\x - 4590.0 * RoomScale, r\y - 1244.0 * RoomScale, r\z + 5144.0 * RoomScale, 0.0, False, FENCE_DOOR)
+			d\Locked = 2 : d\DisableWaypoint = True : d\MTFClose = False
+			
+			; The door leading to ending tunnel
+			d.Doors = CreateDoor(r, r\x - 4064.0 * RoomScale, r\y - 1248.0 * RoomScale, r\z + 3952.0 * RoomScale, 0.0, False, DEFAULT_DOOR, KEY_CARD_2)
+			d\AutoClose = False
+			r\RoomDoors.Doors[0] = d
+			
+			For r2.Rooms = Each Rooms
+				If r2\RoomTemplate\RoomID = r_gate_c_entrance
+					; Elevator door
+					d.Doors = CreateDoor(r, r\x + 1528.0 * RoomScale, r\y, r\z - 64.0 * RoomScale, -90.0, False, ELEVATOR_DOOR)
+					r\RoomDoors.Doors[1] = d
+					
+					r2\Objects[1] = CreatePivot()
+					PositionEntity(r2\Objects[1], r\x + 1832.0 * RoomScale, r\y, r\z - 64.0 * RoomScale)
+					EntityParent(r2\Objects[1], r\OBJ)
+					Exit
+				EndIf
+			Next
+			
+			; Doors inside a tiny tunnel
+			d.Doors = CreateDoor(r, r\x - 1400.0 * RoomScale, r\y - 480.0 * RoomScale, r\z + 2320.0 * RoomScale, 0.0, me\SelectedEnding = Ending_A2, DEFAULT_DOOR, KEY_CARD_2)
+			PositionEntity(d\Buttons[0], EntityX(d\Buttons[0], True) - 0.12, EntityY(d\Buttons[0], True), EntityZ(d\Buttons[0], True), True)
+			PositionEntity(d\Buttons[1], EntityX(d\Buttons[1], True) + 0.12, EntityY(d\Buttons[1], True), EntityZ(d\Buttons[1], True), True)
+			
+			d.Doors = CreateDoor(r, r\x - 1400.0 * RoomScale, r\y - 480.0 * RoomScale, r\z + 4352.0 * RoomScale, 0.0, me\SelectedEnding = Ending_A2, DEFAULT_DOOR, KEY_CARD_2)
+			PositionEntity(d\Buttons[0], EntityX(d\Buttons[0], True) - 0.12, EntityY(d\Buttons[0], True), EntityZ(d\Buttons[0], True), True)
+			PositionEntity(d\Buttons[1], EntityX(d\Buttons[1], True) + 0.12, EntityY(d\Buttons[1], True), EntityZ(d\Buttons[1], True), True)
+			
+			; SCP-106's spawnpoint
+			r\Objects[1] = CreatePivot()
+			PositionEntity(r\Objects[1], r\x + 1188.0 * RoomScale, r\y, r\z + 1960.0 * RoomScale)
+			EntityParent(r\Objects[1], r\OBJ)
+			
+			; A point where SCP-106 retreats
+			r\Objects[2] = CreatePivot()
+			PositionEntity(r\Objects[2], r\x, r\y + 96.0 * RoomScale, r\z + 6400.0 * RoomScale)
+			EntityParent(r\Objects[2], r\OBJ)
+			
+			r\Objects[3] = CreatePivot()
+			PositionEntity(r\Objects[3], r\x - 4064.0 * RoomScale, r\y - 1248.0 * RoomScale, r\z - 1696.0 * RoomScale)
+			EntityParent(r\Objects[3], r\OBJ)
+			
+			r\Objects[6] = CreatePivot()
+			PositionEntity(r\Objects[6], r\x - 3568.0 * RoomScale, r\y - 1089.0 * RoomScale, r\z + 4944.0 * RoomScale)
+			EntityParent(r\Objects[6], r\OBJ)
+			;[End Block]
 		Case r_room1_lifts
 			;[Block]
 			d.Doors = CreateDoor(r, r\x - 239.0 * RoomScale, r\y, r\z + 96.0 * RoomScale, 0.0, False, ELEVATOR_DOOR)

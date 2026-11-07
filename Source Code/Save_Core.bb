@@ -2336,7 +2336,7 @@ Function LoadGameQuick%(File$)
 				;[Block]
 				SetAnimTime(e\room\Objects[0], 1.0 + 239.0 * (e\EventState = 2.0))
 				;[End Block]
-			Case e_gate_a ; ~ Erase ending stuff
+			Case e_gate_a, e_gate_c ; ~ Erase ending stuff
 				;[Block]
 				If e\room\Objects[0] <> 0 Then FreeEntity(e\room\Objects[0]) : e\room\Objects[0] = 0
 				If e\room\Objects[4] <> 0 Then FreeEntity(e\room\Objects[4]) : e\room\Objects[4] = 0
@@ -3043,6 +3043,10 @@ Function LoadMap%(File$)
 	r.Rooms = CreateRoom(0, ROOM1, 0.0, 500.0, -(RoomSpacing) * 2.0, r_gate_a)
 	CalculateRoomExtents(r)
 	CreateEvent(e_gate_a, r_gate_a, 0)
+	
+	r.Rooms = CreateRoom(0, ROOM1, 0.0, 500.0, -(RoomSpacing) * 18.0, r_gate_c)
+	CalculateRoomExtents(r)
+	CreateEvent(e_gate_c, r_gate_c, 0)
 	
 	r.Rooms = CreateRoom(0, ROOM1, (MapGridSize + 2) * RoomSpacing, 0.0, (MapGridSize + 2) * RoomSpacing, r_dimension_106)
 	CalculateRoomExtents(r)

@@ -2105,12 +2105,12 @@ Function UpdateNPCType106%(n.NPCs)
 	; ~ Gate A event has been triggered. Don't make SCP-106 disappear!
 	; ~ The reason why this is a seperate for loop is because we need to make sure that cont2_860_1 would not be able to overwrite the "Spawn106" variable
 	For e.Events = Each Events
-		If e\EventID = e_gate_a
+		If e\EventID = e_gate_a Lor e\EventID = e_gate_c
 			If e\EventState <> 0.0
 				Spawn106 = True
 				n\Idle = (PlayerRoom\RoomTemplate\RoomID = r_dimension_1499)
+				Exit
 			EndIf
-			Exit
 		EndIf
 	Next
 	If (Not Spawn106) And n\State > 1.0
@@ -2189,11 +2189,11 @@ Function UpdateNPCType106%(n.NPCs)
 								PointEntity(n\OBJ, me\Collider)
 								RotateEntity(n\Collider, 0.0, CurveAngle(EntityYaw(n\OBJ), EntityYaw(n\Collider), 100.0), 0.0, True)
 							EndIf
-							AnimateNPC(n, 111.0, 259.0, 0.15 + (0.075 * (SelectedDifficulty\AggressiveNPCs Lor PlayerRoom\RoomTemplate\RoomID = r_gate_a)), False)
+							AnimateNPC(n, 111.0, 259.0, 0.15 + (0.075 * (SelectedDifficulty\AggressiveNPCs Lor PlayerRoom\RoomTemplate\RoomID = r_gate_a Lor PlayerRoom\RoomTemplate\RoomID = r_gate_c)), False)
 						Else
 							GiveAchievement("106")
 							n\State2 = Rnd(3000.0, 3500.0)
-							n\State = 3.0 + (PlayerRoom\RoomTemplate\RoomID = r_gate_a)
+							n\State = 3.0 + (PlayerRoom\RoomTemplate\RoomID = r_gate_a Lor PlayerRoom\RoomTemplate\RoomID = r_gate_c)
 						EndIf
 					EndIf
 				EndIf
@@ -2202,14 +2202,14 @@ Function UpdateNPCType106%(n.NPCs)
 				;[Block]
 				Local Visible% = False
 				
-				If PlayerRoom\RoomTemplate\RoomID <> r_gate_a And PlayerRoom\RoomTemplate\RoomID <> r_dimension_106 Then ShouldPlay = 10
+				If PlayerRoom\RoomTemplate\RoomID <> r_gate_a And PlayerRoom\RoomTemplate\RoomID <> r_gate_c And PlayerRoom\RoomTemplate\RoomID <> r_dimension_106 Then ShouldPlay = 10
 				
 				If PlayerRoom\RoomTemplate\RoomID <> r_dimension_1499
 					If Dist < 12.25
 						If (Not (chs\NoTarget Lor I_268\InvisibilityOn)) Then Visible = True
 					EndIf
 					If Visible
-						If PlayerRoom\RoomTemplate\RoomID <> r_gate_a Then n\PathTimer = 0.0
+						If PlayerRoom\RoomTemplate\RoomID <> r_gate_a And PlayerRoom\RoomTemplate\RoomID <> r_gate_c Then n\PathTimer = 0.0
 						If EntityInView(n\Collider, Camera)
 							Local SqrValue# = (4.0 - Sqr(Dist))
 							
@@ -4316,7 +4316,7 @@ Function UpdateNPCType999%(n.NPCs)
 		Local Pvt%, Visible%
 		
 		If n\State < 4.0
-			If ((PlayerRoom\RoomTemplate\RoomID = r_gate_a_entrance Lor PlayerRoom\RoomTemplate\RoomID = r_gate_b_entrance) And me\InsideElevator Lor n_I\Curr106\State > 1.0)
+			If ((PlayerRoom\RoomTemplate\RoomID = r_gate_a_entrance Lor PlayerRoom\RoomTemplate\RoomID = r_gate_b_entrance Lor PlayerRoom\RoomTemplate\RoomID = r_gate_c_entrance) And me\InsideElevator Lor n_I\Curr106\State > 1.0)
 				n\State = 4.0
 				Return
 			EndIf
@@ -6349,7 +6349,7 @@ Function UpdateNPCTypeMTF%(n.NPCs)
 							TranslateEntity(n\Collider, Cos(EntityYaw(n\Collider, True) + 90.0) * n\CurrSpeed * fps\Factor[0], 0.0, Sin(EntityYaw(n\Collider, True) + 90.0) * n\CurrSpeed * fps\Factor[0], True)
 							AnimateNPC(n, 522.0, 488.0, n\CurrSpeed * 26.0)
 						Else
-							If Dist < 9.0 + ((PlayerRoom\RoomTemplate\RoomID = r_gate_a) * 16.0) And n\State3 = 0.0
+							If Dist < 9.0 + ((PlayerRoom\RoomTemplate\RoomID = r_gate_a Lor PlayerRoom\RoomTemplate\RoomID = r_gate_c) * 16.0) And n\State3 = 0.0
 								n\CurrSpeed = 0.0
 								If n\PrevState = 1
 									SetNPCFrame(n, 423.0)
@@ -7342,7 +7342,7 @@ Function UpdateNPCTypeMTF%(n.NPCs)
 		EndIf
 		
 		; ~ Teleport companions close to the leader if they get stuck
-		If PlayerRoom\RoomTemplate\RoomID <> r_gate_a
+		If PlayerRoom\RoomTemplate\RoomID <> r_gate_a And PlayerRoom\RoomTemplate\RoomID <> r_gate_c
 			If Rand(100) = 1
 				If MyBossIsNotDead
 					If n\State = MTF_WANDERING_AROUND Lor n\State = MTF_096_SPOTTED

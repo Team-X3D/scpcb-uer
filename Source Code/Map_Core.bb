@@ -271,7 +271,7 @@ Function AddLight.Lights(room.Rooms, x#, y#, z#, Type_%, Range#, R%, G%, B%, Has
 		If Rand(50) = 1
 			Local RID% = room\RoomTemplate\RoomID
 			
-			If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_dimension_106 And RID <> r_dimension_1499 Then l\Flickers = True
+			If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_gate_c And RID <> r_dimension_106 And RID <> r_dimension_1499 Then l\Flickers = True
 		EndIf
 	EndIf
 	Return(l)
@@ -1626,6 +1626,8 @@ Enum RoomList
 	r_dimension_106, r_dimension_1499
 	r_mt_landing, r_mt_corridor, r_mt_junction
 	r_mt_boiler, r_mt_generator, r_mt_nest, r_mt_office
+	; GATE C (placeholder)
+	r_gate_c_entrance, r_gate_c
 End Enum
 
 Function FindRoomID%(RoomName$)
@@ -1973,6 +1975,14 @@ Function FindRoomID%(RoomName$)
 		Case "gate_b"
 			;[Block]
 			Return(r_gate_b)
+			;[End Block]
+		Case "gate_c_entrance"
+			;[Block]
+			Return(r_gate_c_entrance)
+			;[End Block]
+		Case "gate_c"
+			;[Block]
+			Return(r_gate_c)
 			;[End Block]
 		Case "room1_ez"
 			;[Block]
@@ -5848,6 +5858,7 @@ Function CreateMap%()
 	;[Block]
 	SetRoom(2, ROOM1, "gate_b_entrance", 1.0)
 	SetRoom(2, ROOM1, "gate_a_entrance", 1.0)
+	SetRoom(2, ROOM1, "gate_c_entrance", 1.0)
 	SetRoom(2, ROOM1, "room1_office", 1.0)
 	SetRoom(2, ROOM1, "room1_lifts", 0.0)
 	
@@ -5996,6 +6007,9 @@ Function CreateMap%()
 	CalculateRoomExtents(r)
 	
 	r.Rooms = CreateRoom(0, ROOM1, (MapGridSize - 1) * RoomSpacing, 500.0, PowTwo(RoomSpacing), r_gate_a)
+	CalculateRoomExtents(r)
+	
+	r.Rooms = CreateRoom(0, ROOM1, (MapGridSize - 1) * RoomSpacing, 500.0, PowTwo(RoomSpacing) * 3.0, r_gate_c)
 	CalculateRoomExtents(r)
 	
 	r.Rooms = CreateRoom(0, ROOM1, (MapGridSize - 1) * RoomSpacing, 0.0, (MapGridSize - 1) * RoomSpacing, r_dimension_106)

@@ -900,6 +900,7 @@ Function CreateOverLapBox%(r.Rooms)
 	
 	If r\RoomTemplate\Name = "gate_b" Then Return
 	If r\RoomTemplate\Name = "gate_a" Then Return
+	If r\RoomTemplate\Name = "gate_c" Then Return
 	If r\RoomTemplate\Name = "dimension_106" Then Return
 	If r\RoomTemplate\Name = "dimension_1499" Then Return
 	If r\RoomTemplate\Name = "cont2_049" Then Return

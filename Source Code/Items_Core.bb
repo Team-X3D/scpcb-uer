@@ -1876,7 +1876,7 @@ Function Use914%(item.Items, Setting%, x#, y#, z#)
 					For r.Rooms = Each Rooms
 						Local RID% = r\RoomTemplate\RoomID
 						
-						If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_dimension_106 And RID <> r_dimension_1499
+						If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_gate_c And RID <> r_dimension_106 And RID <> r_dimension_1499
 							RoomsAmount = RoomsAmount + 1
 							RoomsFound = RoomsFound + r\Found
 						EndIf

@@ -5033,7 +5033,7 @@ Function RenderDebugHUD%()
 			For r.Rooms = Each Rooms
 				Local RID% = r\RoomTemplate\RoomID
 				
-				If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_dimension_106 And RID <> r_dimension_1499
+				If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_gate_c And RID <> r_dimension_106 And RID <> r_dimension_1499
 					RoomsAmount = RoomsAmount + 1
 					RoomsFound = RoomsFound + r\Found
 				EndIf
@@ -5677,7 +5677,7 @@ Function RenderUseItem%(item.Items)
 								For r.Rooms = Each Rooms
 									Local RID% = r\RoomTemplate\RoomID
 									
-									If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_dimension_106 And RID <> r_dimension_1499
+									If RID <> r_cont1_173_intro And RID <> r_gate_a And RID <> r_gate_b And RID <> r_gate_c And RID <> r_dimension_106 And RID <> r_dimension_1499
 										RoomsAmount = RoomsAmount + 1
 										RoomsFound = RoomsFound + r\Found
 									EndIf
@@ -5783,7 +5783,7 @@ Global MTFCameraCheckTimer#
 Global MTFCameraCheckDetected%
 
 Function UpdateMTF%()
-	If PlayerRoom\RoomTemplate\RoomID = r_gate_a_entrance Then Return
+	If PlayerRoom\RoomTemplate\RoomID = r_gate_a_entrance Lor PlayerRoom\RoomTemplate\RoomID = r_gate_c_entrance Then Return
 	
 	Local i%
 	
@@ -6194,6 +6194,8 @@ Function Update008%()
 					msg\DeathMsg = Format(GetLocalString("death", "008gate"), SubjectName, "{0}")
 					If PlayerRoom\RoomTemplate\RoomID = r_gate_a
 						msg\DeathMsg = Format(msg\DeathMsg, "A", "{1}")
+					ElseIf PlayerRoom\RoomTemplate\RoomID = r_gate_c
+						msg\DeathMsg = Format(msg\DeathMsg, "C", "{1}")
 					Else
 						msg\DeathMsg = Format(msg\DeathMsg, "B", "{1}")
 					EndIf
